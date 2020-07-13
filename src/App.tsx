@@ -22,6 +22,13 @@ interface Species {
   people: string[];
 }
 
+const urlToHttps = (url:string) => {
+  if (url.match("^http://")) {
+    url = url.replace("http://", "https://");
+  }
+  return url;
+}
+
 const useFetchAllSpecies = () => {
   const [speciesData, setSpeciesData] = useState<Species[]>([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +43,8 @@ const useFetchAllSpecies = () => {
         newSpeciesData = newSpeciesData.concat(data.results);
 
         while (data.next) {
-          result = await fetch(data.next);
+          let url = urlToHttps(data.next);
+          result = await fetch(url);
           data = await result.json();
           newSpeciesData = newSpeciesData.concat(data.results);
         }
@@ -47,6 +55,7 @@ const useFetchAllSpecies = () => {
         setLoading(false);
       }
     }
+
     fetchSpecies();
     setLoading(false);
   }, []);
@@ -78,7 +87,7 @@ function App() {
     try {
       const x: Species | undefined = _.find(speciesData, { name: value });
       if (x) {
-        const fetchPeople = x.people.map((url: string) => fetch(url));
+        const fetchPeople = x.people.map((url: string) => fetch(urlToHttps(url)));
         const peopleData: Response[] = await Promise.all(fetchPeople);
         const peopleResult: People[] = await Promise.all(
           peopleData.map((v: Response) => v.json())
