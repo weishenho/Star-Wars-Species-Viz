@@ -22,12 +22,12 @@ interface Species {
   people: string[];
 }
 
-const urlToHttps = (url:string) => {
+const urlToHttps = (url: string) => {
   if (url.match("^http://")) {
     url = url.replace("http://", "https://");
   }
   return url;
-}
+};
 
 const useFetchAllSpecies = () => {
   const [speciesData, setSpeciesData] = useState<Species[]>([]);
@@ -66,10 +66,8 @@ const useFetchAllSpecies = () => {
 function App() {
   const { speciesData, loading: loadingFetchAllSpecies } = useFetchAllSpecies();
 
-  const [speciesOptions, setSpeciesOptions] = useState<SpeciesOptions[] | []>(
-    []
-  );
-  const [selectedSpecies, setSelectedSpecies] = useState<People[] | []>([]);
+  const [speciesOptions, setSpeciesOptions] = useState<SpeciesOptions[]>([]);
+  const [selectedSpecies, setSelectedSpecies] = useState<People[]>([]);
 
   useEffect(() => {
     if (Array.isArray(speciesData) && speciesData.length > 0) {
@@ -87,7 +85,9 @@ function App() {
     try {
       const x: Species | undefined = _.find(speciesData, { name: value });
       if (x) {
-        const fetchPeople = x.people.map((url: string) => fetch(urlToHttps(url)));
+        const fetchPeople = x.people.map((url: string) =>
+          fetch(urlToHttps(url))
+        );
         const peopleData: Response[] = await Promise.all(fetchPeople);
         const peopleResult: People[] = await Promise.all(
           peopleData.map((v: Response) => v.json())
@@ -196,10 +196,10 @@ function App() {
       source: selectedSpecies,
     },
     grid: {
-      top: "15%",
+      top: 160,
       left: "10%",
       right: "10%",
-      bottom: "15%",
+      bottom: "10%",
       containLabel: true,
     },
     tooltip: {
